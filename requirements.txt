@@ -1,0 +1,10 @@
+connexion
+sqlalchemy
+mysql-connector-python
+pymysql
+pyyaml
+requests
+uvicorn
+connexion[flask]
+apscheduler
+swagger-ui-bundle

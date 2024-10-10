@@ -1,0 +1,103 @@
+openapi: 3.0.0
+info:
+  title: Running Stats API
+  description: This API receive post-workout information from a smartwatch
+  contact:
+    email: tle172@my.bcit.ca
+  version: 1.0.0
+servers:
+- url: /
+tags:
+- name: smartwatches
+  description: Samsung Smartwatches running Wear OS 5.0 and above
+- name: developers
+  description: Operations available to regular developers
+paths:
+  /stats/running:
+    post:
+      tags:
+      - smartwatches
+      summary: report running stats at the end of a run
+      description: add a new run record to the system
+      operationId: app.running_stats
+      requestBody:
+        description: Running stats record to be added
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RunningStats'
+      responses:
+        "201":
+          description: item created
+        "400":
+          description: "invalid input, object invalid"
+  /stats/music:
+    post:
+      tags:
+      - smartwatches
+      summary: report music info at the end of a run
+      description: add post-run music information to the system
+      operationId: app.music_info
+      requestBody:
+        description: Post-run music information record to be added
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MusicInfo'
+      responses:
+        "201":
+          description: item created
+        "400":
+          description: "invalid input, object invalid"
+components:
+  schemas:
+    RunningStats:
+      required:
+      - distance
+      - duration
+      - timestamp
+      - user_id
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        duration:
+          type: number
+          example: 3600
+        distance:
+          type: number
+          example: 5000
+        timestamp:
+          type: string
+          format: date-time
+          example: 2016-08-29T09:12:33.001Z
+
+    MusicInfo:
+      required:
+      - artist
+      - song_duration
+      - song_name
+      - timestamp
+      - user_id
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          example: d999f1ee-6c54-4b01-90e6-d701748f0851
+        song_name:
+          type: string
+          example: Run Boy Run
+        artist:
+          type: string
+          example: Woodkid
+        song_duration:
+          type: number
+          example: 180
+        timestamp:
+          type: string
+          format: date-time
+          example: 2016-08-29T09:12:33.001Z
+

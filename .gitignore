@@ -18,3 +18,9 @@ Thread Group.jmx
 
 # Ignore any auto-generated files
 *.auto.*
+
+# Ignore virtual environment
+runify_venv/
+
+# Ignore all pycache files
+__pycache__/

@@ -1,0 +1,11 @@
+version: 1
+datastore:
+  user: root
+  password: password
+  hostname: localhost
+  port: 3306
+  db: events
+running_event:
+  url: http://localhost:8090/stats/running
+music_event:
+  url: http://localhost:8090/stats/music

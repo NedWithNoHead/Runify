@@ -1,0 +1,40 @@
+## Database Setup (Windows)
+
+To set up the MySQL database using Docker on Windows:
+
+1. Ensure Docker Desktop for Windows is installed and running.
+
+2. Open PowerShell and navigate to your project directory.
+
+3. Run the following command to create and start the MySQL container:
+
+```powershell
+docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=events -p 3306:3306 -d mysql:latest
+```
+
+Replace `password` in later lab and use environmental variable
+
+
+4. Set the following environment variables:
+
+```powershell
+$env:DB_USERNAME = "root"
+$env:DB_PASSWORD = "your_password"
+$env:DB_HOSTNAME = "localhost"
+$env:DB_PORT = "3306"
+$env:DB_NAME = "events"
+```
+
+5. Run the `create_tables_mysql.py` script to create the necessary tables:
+
+```powershell
+python create_tables_mysql.py
+```
+
+6. To access the MySQL command-line client:
+
+```powershell
+docker exec -it mysql-container mysql -u root -p
+```
+
+

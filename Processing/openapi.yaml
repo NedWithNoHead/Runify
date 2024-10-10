@@ -1,0 +1,54 @@
+openapi: 3.0.0
+info:
+  title: Running and Music Stats API
+  description: This API provides aggregated statistics for running and music data
+  contact:
+    email: tle172@my.bcit.ca
+  version: 1.0.0
+paths:
+  /stats:
+    get:
+      summary: Get the aggregated stats
+      operationId: app.get_stats
+      description: Get the current aggregated statistics
+      responses:
+        '200':
+          description: Successfully returned stats
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stats'
+        '404':
+          description: Statistics do not exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+components:
+  schemas:
+    Stats:
+      type: object
+      properties:
+        num_running_stats:
+          type: integer
+          description: Total number of running events
+        avg_run_duration:
+          type: number
+          description: Average duration of runs in seconds
+        max_run_distance:
+          type: number
+          description: Maximum distance of any run in meters
+        num_music_info:
+          type: integer
+          description: Total number of music events
+        avg_song_duration:
+          type: number
+          description: Average duration of songs in seconds
+        last_updated:
+          type: string
+          format: date-time
+          description: Timestamp of the last update
