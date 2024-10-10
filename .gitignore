@@ -1,0 +1,20 @@
+# Ignore socket files
+*.sock
+
+# Ignore database files (MySQL specific)
+docker/mysql_data/
+
+# Ignore IDE or OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore logs
+Receiver/app.log
+Storage/app.log
+Processing/app.log
+
+# Ignore JMeter test plans (if they are generated)
+Thread Group.jmx
+
+# Ignore any auto-generated files
+*.auto.*
