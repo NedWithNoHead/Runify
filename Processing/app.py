@@ -51,7 +51,7 @@ def populate_stats():
     else:
         with open(app_config['datastore']['filename'], 'r') as f:
             stats = json.load(f)
-        # Initialize new keys if they don't exist
+
         stats.setdefault('avg_run_duration', 0)
         stats.setdefault('avg_song_duration', 0)
     

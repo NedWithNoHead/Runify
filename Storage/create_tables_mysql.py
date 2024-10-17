@@ -13,11 +13,11 @@ for attempt in range(max_retries):
     try:
         print(f"Attempting to connect to MySQL (Attempt {attempt + 1}/{max_retries})...")
         db_conn = mysql.connector.connect(
-            host=app_config['datastore']['hostname'],
-            user=app_config['datastore']['user'],
-            password=app_config['datastore']['password'],
-            database=app_config['datastore']['db'],
-            port=app_config['datastore']['port']
+            host="runify-deployment.canadaeast.cloudapp.azure.com",
+            user="root",
+            password="password",
+            database="events",
+            port=3306
         )
         print("Successfully connected to MySQL.")
         break
@@ -34,8 +34,8 @@ db_cursor = db_conn.cursor()
 
 # Create tables
 try:
-    db_cursor.execute('''
-        CREATE TABLE IF NOT EXISTS running_data (
+    for table_creation_sql in [
+        '''CREATE TABLE IF NOT EXISTS running_data (
             id INT NOT NULL AUTO_INCREMENT,
             user_id VARCHAR(250) NOT NULL,
             duration INTEGER NOT NULL,
@@ -44,11 +44,8 @@ try:
             trace_id VARCHAR(100) NOT NULL,
             date_created VARCHAR(100) NOT NULL,
             PRIMARY KEY (id)
-        )
-    ''')
-
-    db_cursor.execute('''
-        CREATE TABLE IF NOT EXISTS music_data (
+        )''',
+        '''CREATE TABLE IF NOT EXISTS music_data (
             id INT NOT NULL AUTO_INCREMENT,
             user_id VARCHAR(250) NOT NULL,
             song_name VARCHAR(250) NOT NULL,
@@ -58,11 +55,20 @@ try:
             trace_id VARCHAR(100) NOT NULL,
             date_created VARCHAR(100) NOT NULL,
             PRIMARY KEY (id)
-        )
-    ''')
+        )'''
+    ]:
+        print(f"Executing SQL: {table_creation_sql}")
+        db_cursor.execute(table_creation_sql)
+        print(f"SQL executed successfully")
 
     db_conn.commit()
     print("Tables created successfully.")
+
+    # Check if tables were actually created
+    db_cursor.execute("SHOW TABLES")
+    tables = db_cursor.fetchall()
+    print(f"Tables in the database: {tables}")
+
 except mysql.connector.Error as err:
     print(f"Error creating tables: {err}")
 finally:

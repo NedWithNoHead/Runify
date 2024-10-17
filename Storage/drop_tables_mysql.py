@@ -1,12 +1,12 @@
 import mysql.connector
 
 db_connection = mysql.connector.connect(
-    host = "localhost",
-    user = "root",
-    password = "password",
-    database = "events"
+    host="runify-deployment.canadaeast.cloudapp.azure.com",
+    user="root",
+    password="password",
+    database="events",
+    port=3306
 )
-
 db_cursor = db_connection.cursor()
 
 db_cursor.execute('''

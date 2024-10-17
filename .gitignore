@@ -24,3 +24,6 @@ runify_venv/
 
 # Ignore all pycache files
 __pycache__/
+
+## Ignore .env file
+.env

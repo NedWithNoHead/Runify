@@ -2,7 +2,7 @@ version: 1
 datastore:
   user: root
   password: password
-  hostname: localhost
+  hostname: runify-deployment.canadaeast.cloudapp.azure.com
   port: 3306
   db: events
 running_event:
