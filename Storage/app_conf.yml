@@ -1,7 +1,7 @@
 version: 1
 datastore:
   user: root
-  password: password
+  password: password_placeholder
   hostname: runify-deployment.canadaeast.cloudapp.azure.com
   port: 3306
   db: events
@@ -9,6 +9,3 @@ running_event:
   url: http://receiver:8080/stats/running
 music_event:
   url: http://receiver:8080/stats/music
-
-
-  ### comments

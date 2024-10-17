@@ -1,10 +1,25 @@
 import mysql.connector
 import yaml
 import time
+import os
+from dotenv import load_dotenv
+
+# Load .env file
+load_dotenv()
+
+# Print environment variables (be careful with sensitive info)
+print(f"MYSQL_PORT: {os.getenv('MYSQL_PORT')}")
+print(f"MYSQL_ROOT_PASSWORD: {'*' * len(os.getenv('MYSQL_ROOT_PASSWORD', ''))}")
 
 # Load configuration
 with open('app_conf.yml', 'r') as f:
     app_config = yaml.safe_load(f.read())
+
+# Override config with environment variables
+app_config['datastore']['password'] = os.getenv('MYSQL_ROOT_PASSWORD', app_config['datastore']['password'])
+app_config['datastore']['port'] = int(os.getenv('MYSQL_PORT', app_config['datastore']['port']))
+
+
 
 max_retries = 5
 retry_delay = 5  # seconds
@@ -13,13 +28,14 @@ for attempt in range(max_retries):
     try:
         print(f"Attempting to connect to MySQL (Attempt {attempt + 1}/{max_retries})...")
         db_conn = mysql.connector.connect(
-            host="runify-deployment.canadaeast.cloudapp.azure.com",
-            user="root",
-            password="password",
-            database="events",
-            port=3306
+            host=app_config['datastore']['hostname'],
+            user=app_config['datastore']['user'],
+            password=app_config['datastore']['password'],
+            database=app_config['datastore']['db'],
+            port=app_config['datastore']['port']
         )
         print("Successfully connected to MySQL.")
+        print(f"Connected to database: {db_conn.database}")
         break
     except mysql.connector.Error as err:
         print(f"Error connecting to MySQL: {err}")
@@ -34,6 +50,10 @@ db_cursor = db_conn.cursor()
 
 # Create tables
 try:
+    # Ensure we're using the correct database
+    db_cursor.execute(f"USE {app_config['datastore']['db']}")
+    print(f"Using database: {app_config['datastore']['db']}")
+
     for table_creation_sql in [
         '''CREATE TABLE IF NOT EXISTS running_data (
             id INT NOT NULL AUTO_INCREMENT,
@@ -57,9 +77,12 @@ try:
             PRIMARY KEY (id)
         )'''
     ]:
-        print(f"Executing SQL: {table_creation_sql}")
-        db_cursor.execute(table_creation_sql)
-        print(f"SQL executed successfully")
+        try:
+            print(f"Executing SQL: {table_creation_sql}")
+            db_cursor.execute(table_creation_sql)
+            print(f"SQL executed successfully")
+        except mysql.connector.Error as err:
+            print(f"Error executing SQL: {err}")
 
     db_conn.commit()
     print("Tables created successfully.")
