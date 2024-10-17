@@ -3,9 +3,17 @@ import yaml
 from models import Base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
+import os
+from dotenv import load_dotenv
+
+# Load .env file
+load_dotenv()
 
 with open('app_conf.yml', 'r') as f:
     app_config = yaml.safe_load(f.read())
+
+app_config['datastore']['password'] = os.getenv('MYSQL_ROOT_PASSWORD', app_config['datastore']['password'])
+app_config['datastore']['port'] = int(os.getenv('MYSQL_PORT', app_config['datastore']['port']))
 
 DB_ENGINE = create_engine(
     f"mysql+pymysql://{app_config['datastore']['user']}:{app_config['datastore']['password']}@{app_config['datastore']['hostname']}:{app_config['datastore']['port']}/{app_config['datastore']['db']}",

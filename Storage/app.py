@@ -8,15 +8,25 @@ import yaml
 import logging
 import logging.config
 from datetime import datetime
+import os
+from dotenv import load_dotenv
+
+# Load .env file
+load_dotenv()
 
 with open('app_conf.yml', 'r') as f:
     app_config = yaml.safe_load(f.read())
+
+app_config['datastore']['password'] = os.getenv('MYSQL_ROOT_PASSWORD', app_config['datastore']['password'])
+app_config['datastore']['port'] = int(os.getenv('MYSQL_PORT', app_config['datastore']['port']))
 
 with open('log_conf.yml', 'r') as f:
     log_config = yaml.safe_load(f.read())
     logging.config.dictConfig(log_config)
 
 logger = logging.getLogger('basicLogger')
+
+logger.info(f"Connecting to DB. Hostname:{app_config['datastore']['hostname']}, Port:{app_config['datastore']['port']}")
 
 def get_running_stats(start_timestamp, end_timestamp):
     """ Gets running stats after the timestamp """
