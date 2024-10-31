@@ -61,7 +61,7 @@ cd runify
 # Create .env in root directory
 cat > .env << EOL
 MYSQL_ROOT_PASSWORD=your_secure_password
-MYSQL_PORT=33060
+MYSQL_PORT=your_port
 EOL
 ```
 
