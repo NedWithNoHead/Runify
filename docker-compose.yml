@@ -1,0 +1,50 @@
+services:
+  receiver:
+    build: 
+      context: ./receiver
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - deployment_default
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  storage:
+    build:
+      context: ./storage
+      dockerfile: Dockerfile
+    ports:
+      - "8090:8090"
+    networks:
+      - deployment_default
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_PORT=${MYSQL_PORT}
+
+  processing:
+    build:
+      context: ./processing
+      dockerfile: Dockerfile
+    ports:
+      - "8100:8100"
+    networks:
+      - deployment_default
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  analyzer:
+    build:
+      context: ./analyzer
+      dockerfile: Dockerfile
+    ports:
+      - "8110:8110"
+    networks:
+      - deployment_default
+    environment:
+      - PYTHONUNBUFFERED=1
+
+networks:
+  deployment_default:
+    external: true
