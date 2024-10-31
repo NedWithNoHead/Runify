@@ -1,14 +1,73 @@
 services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181"
+    hostname: zookeeper
+    networks:
+      - runify-network
+    volumes:
+      - zookeeper_data:/data
+      - zookeeper_datalog:/datalog
+
+  kafka:
+    image: wurstmeister/kafka
+    command: [start-kafka.sh]
+    ports:
+      - "9092:9092"
+    hostname: kafka
+    environment:
+      KAFKA_CREATE_TOPICS: "events:1:1"
+      KAFKA_ADVERTISED_HOST_NAME: runify-deployment.canadaeast.cloudapp.azure.com
+      KAFKA_LISTENERS: INSIDE://:29092,OUTSIDE://:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:29092,OUTSIDE://runify-deployment.canadaeast.cloudapp.azure.com:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - kafka_data:/kafka
+    depends_on:
+      - zookeeper
+    networks:
+      - runify-network
+
+  mysql:
+      image: mysql:latest
+      container_name: mysql-container
+      environment:
+        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+        MYSQL_DATABASE: events
+        TZ: America/Vancouver
+      ports:
+        - "${MYSQL_PORT}:3306"
+      volumes:
+        - mysql_data:/var/lib/mysql
+      command:
+        - --character-set-server=utf8mb4
+        - --collation-server=utf8mb4_unicode_ci
+        - --bind-address=0.0.0.0
+        - --port=${MYSQL_PORT}  # Using environment variable
+      healthcheck:
+        test: ["CMD", "mysql", "-uroot", "-p${MYSQL_ROOT_PASSWORD}", "-P${MYSQL_PORT}", "-e", "SELECT 1"]
+        interval: 5s
+        timeout: 5s
+        retries: 5
+      networks:
+        - runify-network
+
   receiver:
-    build: 
+    build:
       context: ./Receiver
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
     networks:
-      - deployment_default
+      - runify-network
     environment:
       - PYTHONUNBUFFERED=1
+    depends_on:
+      - kafka
 
   storage:
     build:
@@ -17,11 +76,14 @@ services:
     ports:
       - "8090:8090"
     networks:
-      - deployment_default
+      - runify-network
     environment:
       - PYTHONUNBUFFERED=1
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_PORT=${MYSQL_PORT}
+    depends_on:
+      mysql:
+        condition: service_healthy
 
   processing:
     build:
@@ -30,9 +92,11 @@ services:
     ports:
       - "8100:8100"
     networks:
-      - deployment_default
+      - runify-network
     environment:
       - PYTHONUNBUFFERED=1
+    depends_on:
+      - storage
 
   analyzer:
     build:
@@ -41,10 +105,18 @@ services:
     ports:
       - "8110:8110"
     networks:
-      - deployment_default
+      - runify-network
     environment:
       - PYTHONUNBUFFERED=1
+    depends_on:
+      - kafka
 
 networks:
-  deployment_default:
-    external: true
+  runify-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+  kafka_data:
+  zookeeper_data:
+  zookeeper_datalog:
