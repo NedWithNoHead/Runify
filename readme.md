@@ -1,120 +1,100 @@
 # Runify - Event Processing System
 
-## Project Overview
-A microservices-based system that processes and analyzes running and music data. The system uses a combination of REST APIs, message queues, and databases to handle event processing in a distributed manner.
+## Architecture Overview
+A containerized microservices system that processes running and music data, using:
+- REST APIs for synchronous communication
+- Kafka for asynchronous messaging
+- MySQL for persistent storage
+- Docker for containerization
 
-## Architecture
-The system consists of three main services:
-- Receiver Service
-- Storage Service
-- Analyzer Service
+## System Components
 
-And three infrastructure components:
-- Kafka Message Broker
-- Zookeeper
-- MySQL Database
+### Services
+1. **Receiver Service** (Port 8080)
+   - Entry point for new events
+   - Produces Kafka messages
+   - Endpoints:
+     - `POST /stats/running` - Submit running statistics
+     - `POST /stats/music` - Submit music information
 
-## Services
+2. **Storage Service** (Port 8090)
+   - Manages MySQL database operations
+   - Consumes Kafka messages
+   - Endpoints:
+     - `GET /stats/running` - Retrieve running events by date range
+     - `GET /stats/music` - Retrieve music events by date range
 
-### 1. Receiver Service
-- Entry point for new events
-- **Endpoints**:
-  - `POST /stats/running` - Submit running statistics
-  - `POST /stats/music` - Submit music information
-- **Features**:
-  - Validates incoming requests
-  - Generates trace IDs
-  - Produces messages to Kafka
+3. **Processing Service** (Port 8100)
+   - Periodic statistical analysis
+   - Endpoints:
+     - `GET /stats` - Get aggregated statistics
 
-### 2. Storage Service
-- Purpose: Permanent data storage
-- **Endpoints**:
-  - `GET /stats/running` - Retrieve running events by date range
-  - `GET /stats/music` - Retrieve music events by date range
-- **Features**:
-  - Consumes Kafka messages
-  - Stores data in MySQL
-  - Provides date-based querying
+4. **Analyzer Service** (Port 8110)
+   - Kafka message analysis
+   - Endpoints:
+     - `GET /stats` - Get message queue statistics
+     - `GET /running?index=n` - Get specific running event
+     - `GET /music?index=n` - Get specific music event
 
-### 3. Analyzer Service
-- Purpose: Event analysis and statistics
-- **Endpoints**:
-  - `GET /running?index={n}` - Get specific running event by index
-  - `GET /music?index={n}` - Get specific music event by index
-  - `GET /stats` - Get event statistics
-- **Features**:
-  - Reads Kafka message history
-  - Provides event counts
-  - Index-based event retrieval
+### Infrastructure
+- **MySQL**: Event storage
+- **Kafka**: Message broker
+- **Zookeeper**: Kafka coordination
 
 ## Setup Instructions
 
 ### Prerequisites
-- Python 3.x
 - Docker and Docker Compose
+- Python 3.9+
 - Azure VM or similar cloud instance
-- PostMan for testing
+- Postman for testing
 
 ### Environment Setup
-1. Clone the repository
-2. Create a virtual environment:
+1. Clone the repository:
 ```bash
-python -m venv runify_venv
-source runify_venv/bin/activate  # Linux/Mac
-runify_venv\Scripts\activate     # Windows
+git clone https://github.com/NedWithNoHead/Runify.git
+cd runify
 ```
 
-3. Install dependencies:
+2. Create environment files:
 ```bash
-pip install -r requirements.txt
+# Create .env in root directory
+cat > .env << EOL
+MYSQL_ROOT_PASSWORD=your_secure_password
+MYSQL_PORT=33060
+EOL
 ```
 
-4. Set up environment variables:
+3. Build and start services:
 ```bash
-# Create .env file with required configuration
-# See .env.example for required variables
-```
+# Build all services
+docker compose build
 
-### Infrastructure Setup
-1. Start infrastructure services:
-```bash
+# Start services
 docker compose up -d
 ```
 
-2. Verify services are running:
+### API Testing
+
+1. Running Stats:
 ```bash
-docker ps
-```
-
-### Starting Services
-Start services in this order:
-1. Storage Service
-2. Receiver Service
-3. Analyzer Service
-
-From each service directory:
-```bash
-python app.py
-```
-
-## Testing
-
-### Sample Requests
-
-1. Submit Running Data:
-```bash
-POST /stats/running
+# Submit running data
+POST http://hostname:8080/stats/running
 {
     "user_id": "d290f1ee-6c54-4b01-90e6-d701748f0851",
     "duration": 3600,
     "distance": 5000,
     "timestamp": "2024-09-10T09:12:33.001Z"
 }
+
+# Get stats
+GET http://hostname:8100/stats
 ```
 
-2. Submit Music Data:
+2. Music Info:
 ```bash
-POST /stats/music
+# Submit music data
+POST http://hostname:8080/stats/music
 {
     "user_id": "d999f1ee-6c54-4b01-90e6-d701748f0851",
     "song_name": "Run Boy Run",
@@ -124,35 +104,50 @@ POST /stats/music
 }
 ```
 
-3. Query Events:
-```bash
-# Get running events by date range
-GET /stats/running?start_timestamp=2024-01-01T00:00:00Z&end_timestamp=2024-12-31T23:59:59Z
+### Load Testing
+JMeter configuration provided for load testing:
+- Test Plan: `test_plan.jmx`
+- Simulates concurrent users
+- Random data generation
+- Response validation
 
-# Get first running event from history
-GET /running?index=0
+## Architecture Details
 
-# Get event statistics
-GET /stats
-```
+### Docker Networks
+- All services share a common network
+- Internal service discovery via container names
+- External access via port mapping
 
-## Security Notes
-- Port numbers and connection details should be stored in environment variables
-- Never commit .env files to version control
-- Use secure passwords and update them regularly
-- Restrict access to your infrastructure components
-- Keep all packages and dependencies up to date
+### Data Flow
+1. Receiver accepts REST requests
+2. Messages published to Kafka
+3. Storage service consumes and persists data
+4. Processing service generates statistics
+5. Analyzer provides message queue insights
+
+### Security Notes
+- Sensitive data in .env files (not in git)
+- Required ports exposed via Azure NSG
+- Internal docker network for service communication
 
 ## Troubleshooting
 
 ### Common Issues
-
 1. Connection Issues:
-- Check if all services are running
-- Verify environment variables are set correctly
-- Ensure all required ports are accessible
+   - Check if all services are running (`docker compose ps`)
+   - Verify port mappings
+   - Check Azure NSG rules
 
-2. Message Processing Issues:
-- Check Kafka consumer logs
-- Verify message format matches expected schema
-- Ensure database connection is active
+2. Database Issues:
+   - Check MySQL connection
+   - Verify environment variables
+
+3. Kafka Issues:
+   - Check Zookeeper status
+   - Verify topic creation
+   - Check consumer group offsets
+
+## Monitoring
+- Service logs: `docker compose logs [service_name]`
+- MySQL data: Connect via port 33060
+- Kafka topics: Access via port 9092
