@@ -5,3 +5,28 @@
 2024-10-30 19:01:03,931 - basicLogger - INFO - Retrieving music info at index 0
 2024-10-30 19:01:08,422 - basicLogger - INFO - Retrieving stats
 2024-10-30 19:01:09,692 - basicLogger - INFO - Stats: {'num_running_stats': 295, 'num_music_info': 292}
+2024-10-31 09:25:16,906 - basicLogger - INFO - Retrieving stats
+2024-10-31 09:25:18,256 - basicLogger - INFO - Stats: {'num_running_stats': 295, 'num_music_info': 292}
+2024-10-31 09:26:48,215 - basicLogger - INFO - Retrieving running stats at index 0
+2024-10-31 09:26:51,259 - basicLogger - INFO - Retrieving music info at index 0
+2024-10-31 09:45:55,717 - basicLogger - INFO - Retrieving stats
+2024-10-31 09:45:57,218 - basicLogger - INFO - Stats: {'num_running_stats': 298, 'num_music_info': 292}
+2024-10-31 09:46:01,658 - basicLogger - INFO - Retrieving running stats at index 0
+2024-10-31 09:46:06,708 - basicLogger - INFO - Retrieving music info at index 0
+2024-10-31 09:46:19,228 - basicLogger - INFO - Retrieving music info at index 300
+2024-10-31 09:46:20,571 - basicLogger - ERROR - Could not find music info at index 300
+2024-10-31 09:46:31,562 - basicLogger - INFO - Retrieving music info at index 1
+2024-10-31 09:48:49,501 - basicLogger - INFO - Retrieving stats
+2024-10-31 09:48:50,846 - basicLogger - INFO - Stats: {'num_running_stats': 299, 'num_music_info': 292}
+2024-10-31 09:50:08,745 - basicLogger - INFO - Retrieving stats
+2024-10-31 09:50:10,115 - basicLogger - INFO - Stats: {'num_running_stats': 309, 'num_music_info': 302}
+2024-10-31 09:50:21,826 - basicLogger - INFO - Retrieving running stats at index 301
+2024-10-31 09:50:26,159 - basicLogger - INFO - Retrieving running stats at index 302
+2024-10-31 09:50:32,870 - basicLogger - INFO - Retrieving running stats at index 303
+2024-10-31 09:50:38,755 - basicLogger - INFO - Retrieving stats
+2024-10-31 09:50:40,113 - basicLogger - INFO - Stats: {'num_running_stats': 309, 'num_music_info': 302}
+2024-10-31 09:50:52,281 - basicLogger - INFO - Retrieving running stats at index 399
+2024-10-31 09:50:53,635 - basicLogger - ERROR - Could not find running stats at index 399
+2024-10-31 09:51:32,641 - basicLogger - INFO - Retrieving running stats at index 309
+2024-10-31 09:51:33,977 - basicLogger - ERROR - Could not find running stats at index 309
+2024-10-31 09:51:44,056 - basicLogger - INFO - Retrieving running stats at index 0
