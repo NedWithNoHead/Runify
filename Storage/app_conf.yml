@@ -10,6 +10,6 @@ running_event:
 music_event:
   url: http://receiver:8080/stats/music
 events:
-  hostname: deployment-kafka-1
+  hostname: kafka
   port: 9092
   topic: events
