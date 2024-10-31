@@ -1,7 +1,7 @@
 services:
   receiver:
     build: 
-      context: ./receiver
+      context: ./Receiver
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
@@ -12,7 +12,7 @@ services:
 
   storage:
     build:
-      context: ./storage
+      context: ./Storage
       dockerfile: Dockerfile
     ports:
       - "8090:8090"
@@ -25,7 +25,7 @@ services:
 
   processing:
     build:
-      context: ./processing
+      context: ./Processing
       dockerfile: Dockerfile
     ports:
       - "8100:8100"
@@ -36,7 +36,7 @@ services:
 
   analyzer:
     build:
-      context: ./analyzer
+      context: ./Analyzer
       dockerfile: Dockerfile
     ports:
       - "8110:8110"
