@@ -1,0 +1,133 @@
+openapi: 3.0.0
+info:
+  title: Running Stats Analyzer API
+  description: This API provides analysis of running and music events from history
+  contact:
+    email: tle172@my.bcit.ca
+  version: 1.0.0
+paths:
+  /running:
+    get:
+      summary: gets a running event from history
+      operationId: app.get_running_stats
+      description: Gets running event at the specified index
+      parameters:
+        - name: index
+          in: query
+          description: Index of the event to retrieve
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Successfully returned the event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunningStats'
+        '404':
+          description: Event not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /music:
+    get:
+      summary: gets a music event from history
+      operationId: app.get_music_info
+      description: Gets music event at the specified index
+      parameters:
+        - name: index
+          in: query
+          description: Index of the event to retrieve
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Successfully returned the event
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MusicInfo'
+        '404':
+          description: Event not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /stats:
+    get:
+      summary: gets the event stats
+      operationId: app.get_stats
+      description: Gets the statistics about events in the system
+      responses:
+        '200':
+          description: Successfully returned the stats
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stats'
+components:
+  schemas:
+    RunningStats:
+      type: object
+      required:
+        - user_id
+        - duration
+        - distance
+        - timestamp
+      properties:
+        user_id:
+          type: string
+          format: uuid
+        duration:
+          type: number
+        distance:
+          type: number
+        timestamp:
+          type: string
+          format: date-time
+        trace_id:
+          type: string
+    MusicInfo:
+      type: object
+      required:
+        - user_id
+        - song_name
+        - artist
+        - song_duration
+        - timestamp
+      properties:
+        user_id:
+          type: string
+          format: uuid
+        song_name:
+          type: string
+        artist:
+          type: string
+        song_duration:
+          type: number
+        timestamp:
+          type: string
+          format: date-time
+        trace_id:
+          type: string
+    Stats:
+      type: object
+      required:
+        - num_running_stats
+        - num_music_info
+      properties:
+        num_running_stats:
+          type: integer
+          description: Number of running events
+        num_music_info:
+          type: integer
+          description: Number of music events

@@ -1,0 +1,5 @@
+version: 1
+events:
+  hostname: runify-deployment.canadaeast.cloudapp.azure.com
+  port: 9092
+  topic: events
