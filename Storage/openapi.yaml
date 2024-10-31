@@ -14,23 +14,6 @@ tags:
   description: Operations available to regular developers
 paths:
   /stats/running:
-    post:
-      tags:
-      - smartwatches
-      summary: report running stats at the end of a run
-      description: add a new run record to the system
-      operationId: app.running_stats
-      requestBody:
-        description: Running stats record to be added
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RunningStats'
-      responses:
-        "201":
-          description: item created
-        "400":
-          description: "invalid input, object invalid"
     get:
       summary: Get running stats
       operationId: app.get_running_stats
@@ -60,23 +43,6 @@ paths:
                 items:
                   $ref: '#/components/schemas/RunningStats'
   /stats/music:
-    post:
-      tags:
-      - smartwatches
-      summary: report music info at the end of a run
-      description: add post-run music information to the system
-      operationId: app.music_info
-      requestBody:
-        description: Post-run music information record to be added
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MusicInfo'
-      responses:
-        "201":
-          description: item created
-        "400":
-          description: "invalid input, object invalid"
     get:
       summary: Get music info
       operationId: app.get_music_info

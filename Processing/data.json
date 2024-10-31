@@ -1,9 +1,9 @@
 {
-    "num_running_stats": 351,
-    "num_music_info": 351,
+    "num_running_stats": 359,
+    "num_music_info": 353,
     "max_distance": 9964,
     "max_duration": 5978,
-    "avg_run_duration": 4025.5470085470088,
-    "avg_song_duration": 272.35042735042737,
-    "last_updated": "2024-10-17T09:43:34Z"
+    "avg_run_duration": 4016.064066852368,
+    "avg_song_duration": 271.8271954674221,
+    "last_updated": "2024-10-17T11:34:38Z"
 }

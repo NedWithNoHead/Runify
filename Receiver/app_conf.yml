@@ -9,3 +9,7 @@ running_event:
   url: http://localhost:8090/stats/running
 music_event:
   url: http://localhost:8090/stats/music
+events:
+  hostname: runify-deployment.canadaeast.cloudapp.azure.com
+  port: 9092
+  topic: events

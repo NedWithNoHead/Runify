@@ -9,7 +9,12 @@ import logging
 import logging.config
 from datetime import datetime
 import os
+import json
+from threading import Thread
+from pykafka import KafkaClient
+from pykafka.common import OffsetType
 from dotenv import load_dotenv
+import uuid
 
 # Load .env file
 load_dotenv()
@@ -84,15 +89,17 @@ def running_stats(body):
         duration=body['duration'],
         distance=body['distance'],
         timestamp=body['timestamp'],
-        trace_id=body['trace_id']
+        trace_id=body.get('trace_id', str(uuid.uuid4()))
     )
     
     session.add(rd)
     session.commit()
+    trace_id = rd.trace_id
     session.close()
 
-    logger.info(f"Stored event running_stats request with a trace id of {body['trace_id']}")
-    
+    logger.info(f"Store event running_stats request with a trace id of {rd.trace_id}")
+
+
     return NoContent, 201
 
 def music_info(body):
@@ -104,19 +111,49 @@ def music_info(body):
         artist=body['artist'],
         song_duration=body['song_duration'],
         timestamp=body['timestamp'],
-        trace_id=body['trace_id']
+        trace_id=body.get('trace_id', str(uuid.uuid4()))
     )
     
     session.add(md)
     session.commit()
+    trace_id = md.trace_id
     session.close()
 
-    logger.info(f"Stored event music_info request with a trace id of {body['trace_id']}")
+    logger.info(f"Store event music_info request with a trace id of {md.trace_id}")
 
     return NoContent, 201
+
+def process_messages():
+    """ Process event messages """
+    hostname = "%s:%d" % (app_config['events']['hostname'], app_config['events']['port'])
+    client = KafkaClient(hosts=hostname)
+    topic = client.topics[str.encode(app_config['events']['topic'])]
+
+    consumer = topic.get_simple_consumer(consumer_group=b'event_group', reset_offset_on_start=False, auto_offset_reset=OffsetType.LATEST)
+
+    while True:
+        try:
+            for msg in consumer:
+                msg_str = msg.value.decode('utf-8')
+                msg = json.loads(msg_str)
+                logger.info(f"Consumed message: {msg}")
+
+                payload = msg['payload']
+
+                if msg['type'] == 'running_stats':
+                    running_stats(payload)
+                elif msg['type'] == 'music_info':
+                    music_info(payload)
+
+                consumer.commit_offsets()
+        except Exception as e:
+            logger.error(f"Error processing message: {str(e)}")
 
 app = connexion.FlaskApp(__name__, specification_dir='')
 app.add_api("openapi.yaml", strict_validation=True, validate_responses=True)
 
 if __name__ == "__main__":
+    t1 = Thread(target=process_messages)
+    t1.setDaemon = True
+    t1.start()
     app.run(port=8090)

@@ -10,3 +10,5 @@ apscheduler
 swagger-ui-bundle
 python-dotenv
 pykafka 
+setuptools
+cryptography
