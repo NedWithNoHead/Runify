@@ -1,15 +1,9 @@
 version: 1
-datastore:
-  user: root
-  password: password
-  hostname: localhost
-  port: 3306
-  db: events
-running_event:
-  url: http://localhost:8090/stats/running
-music_event:
-  url: http://localhost:8090/stats/music
 events:
-  hostname: runify-deployment.canadaeast.cloudapp.azure.com
+  hostname: deployment-kafka-1
   port: 9092
   topic: events
+running_event:
+  url: http://storage:8090/stats/running
+music_event:
+  url: http://storage:8090/stats/music
