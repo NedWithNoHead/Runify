@@ -11,7 +11,9 @@ Thumbs.db
 # Ignore logs
 Receiver/app.log
 Storage/app.log
-Processing/app.log
+Processing/data.json
+**/data.json
+*.log
 
 # Ignore JMeter test plans (if they are generated)
 Thread Group.jmx

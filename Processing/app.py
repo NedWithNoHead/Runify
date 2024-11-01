@@ -37,6 +37,8 @@ def get_stats():
 def populate_stats():
     """ Periodically update stats """
     logger.info("Start Periodic Processing")
+
+    os.makedirs(os.path.dirname(app_config['datastore']['filename']), exist_ok=True)
     
     if not os.path.exists(app_config['datastore']['filename']):
         stats = {
