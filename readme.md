@@ -1,5 +1,15 @@
 # Runify - Event Processing System
 
+## Version History
+
+### v1.1-lab8 (2024-10-31)
+- ✅ All microservices functional in Docker containers
+- ✅ Kafka messaging system working
+- ✅ MySQL database integration complete
+- ✅ Processing service stats tracking working
+- ✅ Inter-service communication established
+- ✅ Docker networking configured
+
 ## Architecture Overview
 A containerized microservices system that processes running and music data, using:
 - REST APIs for synchronous communication
