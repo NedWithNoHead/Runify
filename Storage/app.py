@@ -155,8 +155,14 @@ app = connexion.FlaskApp(__name__, specification_dir='')
 app.add_api("openapi.yaml", strict_validation=True, validate_responses=True)
 
 if __name__ == "__main__":
+    time.sleep(20)
+    try:
+        create_tables_mysql(is_docker=True)
+        logger.info("Tables created successfully")
+    except Exception as e:
+        logger.error(f"Error creating tables: {str(e)}")
+    
     t1 = Thread(target=process_messages)
     t1.setDaemon = True
     t1.start()
-    create_tables_mysql(is_docker=True)
     app.run(host="0.0.0.0", port=8090)
