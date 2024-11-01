@@ -45,7 +45,7 @@ services:
         MYSQL_DATABASE: events
         TZ: America/Vancouver
       ports:
-        - "${MYSQL_PORT}:3306"  
+        - "3306:3306"  
       volumes:
         - mysql_data:/var/lib/mysql  
       command:
@@ -84,7 +84,7 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_PORT=${MYSQL_PORT}
+      - MYSQL_PORT=3306
     depends_on:
       mysql:
         condition: service_healthy

@@ -20,7 +20,7 @@ def create_tables_mysql(is_docker=False):
     
     # Override config with environment variables
     app_config['datastore']['password'] = os.getenv('MYSQL_ROOT_PASSWORD', app_config['datastore']['password'])
-    app_config['datastore']['port'] = int(os.getenv('MYSQL_PORT', app_config['datastore']['port']))
+    # app_config['datastore']['port'] = int(os.getenv('MYSQL_PORT', app_config['datastore']['port']))
     
     # Use localhost if running locally
     if not is_docker:
