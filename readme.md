@@ -68,6 +68,7 @@ Runify is a microservices-based system for processing running and music data, fe
    Port 22 (SSH)
    Port 8080 (Receiver Service)
    Port 8100 (Processing Service)
+   Port 8110 (Analyzer Service)
    ```
    Note: Other ports remain internal to the system for security.
 
@@ -86,7 +87,7 @@ sudo usermod -aG docker ${USER}
 1. Clone the repository:
 ```bash
 git clone https://github.com/NedWithNoHead/Runify.git
-cd runify
+cd Runify
 ```
 
 2. Create environment files:
