@@ -22,11 +22,14 @@ logger = logging.getLogger('basicLogger')
 def get_stats():
     logger.info("Request for statistics has started")
     
-    if not os.path.exists(app_config['datastore']['filename']):
-        logger.error("Statistics do not exist")
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(current_dir, app_config['datastore']['filename'])
+    
+    if not os.path.exists(file_path): 
+        logger.error(f"Statistics do not exist at {file_path}")
         return {"message": "Statistics do not exist"}, 404
     
-    with open(app_config['datastore']['filename'], 'r') as f:
+    with open(file_path, 'r') as f: 
         stats = json.load(f)
     
     logger.info(f"Statistics retrieved: {stats}")
@@ -38,9 +41,12 @@ def populate_stats():
     """ Periodically update stats """
     logger.info("Start Periodic Processing")
 
-    os.makedirs(os.path.dirname(app_config['datastore']['filename']), exist_ok=True)
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(current_dir, app_config['datastore']['filename'])
     
-    if not os.path.exists(app_config['datastore']['filename']):
+    logger.info(f"Checking for stats file at: {file_path}")
+    
+    if not os.path.exists(file_path):
         stats = {
             "num_running_stats": 0,
             "num_music_info": 0,
@@ -50,8 +56,11 @@ def populate_stats():
             "avg_song_duration": 0,
             "last_updated": "2000-01-01T00:00:00Z"
         }
+        with open(file_path, 'w') as f:
+            json.dump(stats, f, indent=4)
+        logger.info("Created new stats file")
     else:
-        with open(app_config['datastore']['filename'], 'r') as f:
+        with open(file_path, 'r') as f:
             stats = json.load(f)
 
         stats.setdefault('avg_run_duration', 0)
@@ -119,7 +128,7 @@ def populate_stats():
     
     stats['last_updated'] = current_datetime
     
-    with open(app_config['datastore']['filename'], 'w') as f:
+    with open(file_path, 'w') as f:  
         json.dump(stats, f, indent=4)
     
     logger.info(f"Updated stats: {stats}")
