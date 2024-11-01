@@ -3,7 +3,7 @@ from connexion import NoContent
 from sqlalchemy import create_engine, and_
 from sqlalchemy.orm import sessionmaker
 from models import Base, RunningData, MusicData
-from db import get_db_session
+from db import get_db_session, create_tables
 import yaml
 import logging
 import logging.config
@@ -156,4 +156,5 @@ if __name__ == "__main__":
     t1 = Thread(target=process_messages)
     t1.setDaemon = True
     t1.start()
+    create_tables()
     app.run(host="0.0.0.0", port=8090)
