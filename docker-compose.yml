@@ -11,24 +11,31 @@ services:
       - zookeeper_datalog:/datalog
 
   kafka:
-    image: wurstmeister/kafka
-    command: [start-kafka.sh]
-    ports:
-      - "9092:9092"
-    hostname: kafka
-    environment:
-      KAFKA_CREATE_TOPICS: "events:1:1"
-      KAFKA_ADVERTISED_HOST_NAME: kafka
-      KAFKA_LISTENERS: PLAINTEXT://:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - kafka_data:/kafka
-    depends_on:
-      - zookeeper
-    networks:
-      - runify-network
+      image: wurstmeister/kafka
+      command: [start-kafka.sh]
+      ports:
+        - "9092:9092"
+      hostname: kafka
+      environment:
+        KAFKA_CREATE_TOPICS: "events:1:1"
+        KAFKA_ADVERTISED_HOST_NAME: kafka
+        KAFKA_LISTENERS: INSIDE://:29092,OUTSIDE://:9092
+        KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+        KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:29092,OUTSIDE://kafka:9092
+        KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+        KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - kafka_data:/kafka
+      depends_on:
+        - zookeeper
+      healthcheck:
+        test: ["CMD-SHELL", "kafka-topics.sh --list --bootstrap-server localhost:9092"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+      networks:
+        - runify-network
 
   mysql:
       image: mysql:latest
@@ -81,6 +88,8 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+      kafka:
+        condition: service_started
 
   processing:
     build:

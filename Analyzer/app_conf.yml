@@ -1,5 +1,5 @@
 version: 1
 events:
-  hostname: deployment-kafka-1
+  hostname: kafka
   port: 9092
   topic: events
