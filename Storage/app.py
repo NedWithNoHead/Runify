@@ -152,9 +152,26 @@ def process_messages():
 app = connexion.FlaskApp(__name__, specification_dir='')
 app.add_api("openapi.yaml", strict_validation=True, validate_responses=True)
 
+def create_tables_with_retry(retries=5, delay=5):
+    last_exception = None
+    for attempt in range(retries):
+        try:
+            logger.info(f"Attempting to create tables (attempt {attempt + 1}/{retries})")
+            create_tables()
+            logger.info("Tables created successfully")
+            return
+        except Exception as e:
+            last_exception = e
+            logger.error(f"Failed to create tables: {str(e)}")
+            if attempt < retries - 1:
+                logger.info(f"Retrying in {delay} seconds...")
+                time.sleep(delay)
+    
+    raise last_exception
+
 if __name__ == "__main__":
     t1 = Thread(target=process_messages)
     t1.setDaemon = True
     t1.start()
-    create_tables()
+    create_tables_with_retry()
     app.run(host="0.0.0.0", port=8090)
