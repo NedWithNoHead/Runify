@@ -73,8 +73,11 @@ def populate_stats():
             f"{app_config['eventstore']['url']}/stats/running",
             params={'start_timestamp': stats['last_updated'], 'end_timestamp': current_datetime}
         )
+        logger.info(f"Running stats request URL: {running_response.url}")  
+        logger.info(f"Running stats response status: {running_response.status_code}")  
         running_response.raise_for_status()
         running_data = running_response.json()
+        logger.info(f"Running data received: {running_data}")
         
         if running_data:
             new_run_count = len(running_data)
@@ -104,8 +107,11 @@ def populate_stats():
             f"{app_config['eventstore']['url']}/stats/music",
             params={'start_timestamp': stats['last_updated'], 'end_timestamp': current_datetime}
         )
+        logger.info(f"Music stats request URL: {music_response.url}")  
+        logger.info(f"Music stats response status: {music_response.status_code}")  
         music_response.raise_for_status()
         music_data = music_response.json()
+        logger.info(f"Music data received: {music_data}")
         
         if music_data:
             new_music_count = len(music_data)
