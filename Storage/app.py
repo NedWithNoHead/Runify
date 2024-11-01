@@ -25,7 +25,7 @@ with open('app_conf.yml', 'r') as f:
     app_config = yaml.safe_load(f.read())
 
 app_config['datastore']['password'] = os.getenv('MYSQL_ROOT_PASSWORD', app_config['datastore']['password'])
-app_config['datastore']['port'] = int(os.getenv('MYSQL_PORT', app_config['datastore']['port']))
+# app_config['datastore']['port'] = int(os.getenv('MYSQL_PORT', app_config['datastore']['port']))
 
 with open('log_conf.yml', 'r') as f:
     log_config = yaml.safe_load(f.read())
