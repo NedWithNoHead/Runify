@@ -1,7 +1,7 @@
-const STATS_API_URL = "http://localhost:8100/stats"
+const STATS_API_URL = "http://processing:8100/stats"
 const EVENTS_URL = {
-    running: "http://localhost:8110/running",
-    music: "http://localhost:8110/music"
+    running: "http://analyzer:8110/running",
+    music: "http://analyzer:8110/music"
 }
 
 const getStats = (statsUrl) => {

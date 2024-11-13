@@ -116,6 +116,16 @@ services:
     depends_on:
       - kafka
 
+  dashboard:
+    build:
+      context: ./dashboard-ui
+      dockerfile: Dockerfile
+    ports:
+      - "8888:80"
+    depends_on:
+      - "processing"
+      - "analyzer"
+
 networks:
   runify-network:
     driver: bridge
