@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Runify Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main id="main" role="main">
+        <header id="header">
+            <img src="/api/placeholder/100/100" alt="Runify Logo" id="logo">
+            <h1>Runify Statistics</h1>
+        </header>
+
+        <div id="stats-container">
+            <h2>Current Statistics</h2>
+            <div id="stats"></div>
+            <p id="last-updated"></p>
+        </div>
+
+        <div id="events">
+            <div class="event-box">
+                <h3>Running Event</h3>
+                <div id="event-running"></div>
+            </div>
+
+            <div class="event-box">
+                <h3>Music Event</h3>
+                <div id="event-music"></div>
+            </div>
+        </div>
+    </main>
+    <script src="updateStats.js"></script>
+</body>
+</html>
