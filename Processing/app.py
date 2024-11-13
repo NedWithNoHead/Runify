@@ -9,6 +9,7 @@ import json
 from datetime import datetime
 import os
 import traceback
+from flask_cors import CORS
 
 with open('app_conf.yml', 'r') as f:
     app_config = yaml.safe_load(f.read())
@@ -149,6 +150,7 @@ def init_scheduler():
 
 app = connexion.FlaskApp(__name__, specification_dir='')
 app.add_api("openapi.yaml", strict_validation=True, validate_responses=True)
+CORS(app.app)
 
 if __name__ == "__main__":
     init_scheduler()

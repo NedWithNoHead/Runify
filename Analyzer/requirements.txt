@@ -12,3 +12,4 @@ python-dotenv
 pykafka 
 setuptools
 cryptography
+flask-cors

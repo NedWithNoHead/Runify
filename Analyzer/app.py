@@ -8,6 +8,7 @@ from pykafka import KafkaClient
 from pykafka.common import OffsetType
 from threading import Thread
 from dotenv import load_dotenv
+from flask_cors import CORS
 
 # Load configuration
 with open('app_conf.yml', 'r') as f:
@@ -106,6 +107,7 @@ def get_stats():
 
 app = connexion.FlaskApp(__name__, specification_dir='')
 app.add_api("openapi.yaml", strict_validation=True, validate_responses=True)
+CORS(app.app)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8110)
