@@ -52,11 +52,11 @@ const updateStatsHTML = (data, error = false) => {
 
     elem.innerHTML = ""
     const stats = [
-        { label: "Total Runs", value: data.num_running_stats },
-        { label: "Average Run Duration", value: `${(data.avg_run_duration / 60).toFixed(2)} minutes` },
-        { label: "Max Run Distance", value: `${(data.max_run_distance / 1000).toFixed(2)} km` },
-        { label: "Total Songs", value: data.num_music_info },
-        { label: "Average Song Duration", value: `${(data.avg_song_duration / 60).toFixed(2)} minutes` }
+        { label: "Total Runs", value: data.num_running_stats || 0 },
+        { label: "Average Run Duration", value: `${data.avg_run_duration ? (data.avg_run_duration / 60).toFixed(2) : 'N/A'} minutes` },
+        { label: "Max Run Distance", value: `${data.max_distance ? (data.max_distance / 1000).toFixed(2) : 'N/A'} km` },
+        { label: "Total Songs", value: data.num_music_info || 0 },
+        { label: "Average Song Duration", value: `${data.avg_song_duration ? (data.avg_song_duration / 60).toFixed(2) : 'N/A'} minutes` }
     ]
 
     stats.forEach(stat => {
@@ -75,19 +75,28 @@ const updateEventHTML = (data, eventType, error = false) => {
     }
 
     elem.innerHTML = ""
-    const stats = [
-        { label: "Total Runs", value: data.num_running_stats },
-        { label: "Average Run Duration", value: `${(data.avg_run_duration / 60).toFixed(2)} minutes` },
-        { label: "Max Run Distance", value: `${(data.max_distance / 1000).toFixed(2)} km` }, 
-        { label: "Total Songs", value: data.num_music_info },
-        { label: "Average Song Duration", value: `${(data.avg_song_duration / 60).toFixed(2)} minutes` }
-    ]
-
-    stats.forEach(stat => {
-        const p = document.createElement("p")
-        p.innerHTML = `<strong>${stat.label}:</strong> ${stat.value}`
-        elem.appendChild(p)
-    })
+    if (eventType === 'running') {
+        elem.innerHTML = `
+            <div class="event-details">
+                <p><strong>User ID:</strong> ${data.user_id || 'N/A'}</p>
+                <p><strong>Duration:</strong> ${data.duration ? (data.duration / 60).toFixed(2) : 'N/A'} minutes</p>
+                <p><strong>Distance:</strong> ${data.distance ? (data.distance / 1000).toFixed(2) : 'N/A'} km</p>
+                <p><strong>Time:</strong> ${data.timestamp ? new Date(data.timestamp).toLocaleString() : 'N/A'}</p>
+                <p><strong>Trace ID:</strong> ${data.trace_id || 'N/A'}</p>
+            </div>
+        `
+    } else if (eventType === 'music') {
+        elem.innerHTML = `
+            <div class="event-details">
+                <p><strong>User ID:</strong> ${data.user_id || 'N/A'}</p>
+                <p><strong>Song:</strong> ${data.song_name || 'N/A'}</p>
+                <p><strong>Artist:</strong> ${data.artist || 'N/A'}</p>
+                <p><strong>Duration:</strong> ${data.song_duration ? (data.song_duration / 60).toFixed(2) : 'N/A'} minutes</p>
+                <p><strong>Time:</strong> ${data.timestamp ? new Date(data.timestamp).toLocaleString() : 'N/A'}</p>
+                <p><strong>Trace ID:</strong> ${data.trace_id || 'N/A'}</p>
+            </div>
+        `
+    }
 }
 
 const updateLastUpdated = (timestamp) => {
