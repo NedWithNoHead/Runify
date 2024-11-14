@@ -1,7 +1,7 @@
-const STATS_API_URL = "http://processing:8100/stats"
+const STATS_API_URL = "http://runify-deployment.canadaeast.cloudapp.azure.com:8100/stats"
 const EVENTS_URL = {
-    running: "http://analyzer:8110/running",
-    music: "http://analyzer:8110/music"
+    running: "http://runify-deployment.canadaeast.cloudapp.azure.com:8110/running",
+    music: "http://runify-deployment.canadaeast.cloudapp.azure.com:8110/music"
 }
 
 const getStats = (statsUrl) => {
