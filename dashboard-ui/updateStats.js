@@ -4,21 +4,9 @@ const EVENTS_URL = {
     music: "http://runify-deployment.canadaeast.cloudapp.azure.com:8110/music"
 }
 
-const getStats = (statsUrl) => {
-    fetch(statsUrl)
-        .then(res => res.json())
-        .then((result) => {
-            console.log("Received stats", result)
-            updateStatsHTML(result)
-            updateLastUpdated(result.last_updated)
-        })
-        .catch((error) => {
-            updateStatsHTML({ error: error.message }, true)
-        })
-}
-
 const getEvent = (eventType) => {
-    const eventIndex = Math.floor(Math.random() * 100)
+    const maxIndex = eventType === 'running' ? statsData.num_running_stats : statsData.num_music_info
+    const eventIndex = Math.floor(Math.random() * maxIndex)
 
     fetch(`${EVENTS_URL[eventType]}?index=${eventIndex}`)
         .then(res => {
@@ -33,6 +21,25 @@ const getEvent = (eventType) => {
         })
         .catch((error) => {
             updateEventHTML({ error: error.message }, eventType, true)
+        })
+}
+
+let statsData = {
+    num_running_stats: 0,
+    num_music_info: 0
+};
+
+const getStats = (statsUrl) => {
+    fetch(statsUrl)
+        .then(res => res.json())
+        .then((result) => {
+            console.log("Received stats", result)
+            statsData = result  
+            updateStatsHTML(result)
+            updateLastUpdated(result.last_updated)
+        })
+        .catch((error) => {
+            updateStatsHTML({ error: error.message }, true)
         })
 }
 
