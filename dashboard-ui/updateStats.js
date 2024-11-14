@@ -74,24 +74,20 @@ const updateEventHTML = (data, eventType, error = false) => {
         return
     }
 
-    let html = ''
-    if (eventType === 'running') {
-        html = `
-            <p><strong>User ID:</strong> ${data.user_id}</p>
-            <p><strong>Duration:</strong> ${(data.duration / 60).toFixed(2)} minutes</p>
-            <p><strong>Distance:</strong> ${(data.distance / 1000).toFixed(2)} km</p>
-            <p><strong>Time:</strong> ${new Date(data.timestamp).toLocaleString()}</p>
-        `
-    } else {
-        html = `
-            <p><strong>User ID:</strong> ${data.user_id}</p>
-            <p><strong>Song:</strong> ${data.song_name}</p>
-            <p><strong>Artist:</strong> ${data.artist}</p>
-            <p><strong>Duration:</strong> ${(data.song_duration / 60).toFixed(2)} minutes</p>
-            <p><strong>Time:</strong> ${new Date(data.timestamp).toLocaleString()}</p>
-        `
-    }
-    elem.innerHTML = html
+    elem.innerHTML = ""
+    const stats = [
+        { label: "Total Runs", value: data.num_running_stats },
+        { label: "Average Run Duration", value: `${(data.avg_run_duration / 60).toFixed(2)} minutes` },
+        { label: "Max Run Distance", value: `${(data.max_distance / 1000).toFixed(2)} km` }, 
+        { label: "Total Songs", value: data.num_music_info },
+        { label: "Average Song Duration", value: `${(data.avg_song_duration / 60).toFixed(2)} minutes` }
+    ]
+
+    stats.forEach(stat => {
+        const p = document.createElement("p")
+        p.innerHTML = `<strong>${stat.label}:</strong> ${stat.value}`
+        elem.appendChild(p)
+    })
 }
 
 const updateLastUpdated = (timestamp) => {

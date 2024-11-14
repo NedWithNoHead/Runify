@@ -21,8 +21,9 @@ body {
 
 #header {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 2rem;
+    text-align: center;
     padding-bottom: 2rem;
     border-bottom: 1px solid #eee;
     margin-bottom: 2rem;
@@ -32,6 +33,7 @@ body {
     width: 80px;
     height: 80px;
     border-radius: 8px;
+    margin-bottom: 1rem;
 }
 
 #header h1 {
