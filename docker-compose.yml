@@ -25,7 +25,6 @@ services:
         KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
         KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
         KAFKA_BROKER_ID: 1
-        KAFKA_CLUSTER_ID: "fbvZKh8BQFmV1VraA3i49g"
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
         - kafka_data:/kafka
