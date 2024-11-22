@@ -31,3 +31,7 @@ __pycache__/
 .env
 
 docker/
+
+# Ignore hepler script
+gather_project.py
+project_contents_*.json
