@@ -134,6 +134,5 @@ networks:
 volumes:
   mysql_data:
   kafka_data:
-  zookeeper_datalog:
   zookeeper_data:
   zookeeper_datalog:
