@@ -1,69 +1,42 @@
 services:
   zookeeper:
-      image: wurstmeister/zookeeper
-      ports:
-        - "2181"
-      hostname: zookeeper
-      networks:
-        - runify-network
-      volumes:
-        - zookeeper_data:/data
-        - zookeeper_datalog:/datalog
-      healthcheck:
-        test: ["CMD-SHELL", "echo ruok | nc localhost 2181 || exit 1"]
-        interval: 10s
-        timeout: 5s
-        retries: 5
-        start_period: 10s
-      environment:
-        ZOO_MY_ID: 1
-        ZOO_PORT: 2181
-
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181"
+    hostname: zookeeper
+    volumes:
+      - zookeeper-data:/opt/zookeeper-3.4.13/data
+    networks:
+      - runify-network
+  
   kafka:
-      image: wurstmeister/kafka
-      ports:
-        - "9092:9092"
-      hostname: kafka
-      environment:
-        KAFKA_CREATE_TOPICS: "events:1:1"
-        KAFKA_LISTENERS: INSIDE://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
-        KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:29092,OUTSIDE://kafka:9092
-        KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
-        KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
-        KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-        KAFKA_BROKER_ID: 1
-        KAFKA_LOG_DIRS: /kafka/kafka-logs-1
-        KAFKA_DELETE_TOPIC_ENABLE: "true"
-        KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
-        KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-        KAFKA_NUM_PARTITIONS: 1
-        KAFKA_DEFAULT_REPLICATION_FACTOR: 1
-        KAFKA_MIN_INSYNC_REPLICAS: 1
-        KAFKA_LOG_RETENTION_HOURS: 24
-        KAFKA_HEAP_OPTS: "-Xmx512M -Xms512M"
-      volumes:
-        - kafka_data:/kafka/kafka-logs-1
-        - kafka_data:/tmp/kafka-logs-1
-      deploy:
-        resources:
-          limits:
-            memory: 1G
-          reservations:
-            memory: 512M
-        restart_policy:
-          condition: on-failure
-          max_attempts: 3
-      depends_on:
-        zookeeper:
-          condition: service_healthy
-      healthcheck:
-        test: ["CMD-SHELL", "kafka-topics.sh --bootstrap-server localhost:9092 --list"]
-        interval: 30s
-        timeout: 10s
-        retries: 5
-        start_period: 30s
-      networks:
-        - runify-network
+    image: wurstmeister/kafka
+    command: [start-kafka.sh]
+    ports:
+      - "9092:9092"
+    hostname: kafka
+    environment:
+      KAFKA_CREATE_TOPICS: "events:1:1" 
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_LISTENERS: INSIDE://:29092,OUTSIDE://:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:29092,OUTSIDE://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LOGS_DIR: /kafka/kafka_logs
+      KAFKA_BROKER_ID: 1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - kafka-logs:/kafka/kafka-logs-kafka
+    depends_on:
+      - zookeeper
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics.sh --bootstrap-server localhost:9092 --topic events --describe"]
+      interval: 5s
+      timeout: 20s
+      retries: 5
+    networks:
+      - runify-network
 
   mysql:
       image: mysql:latest
@@ -160,6 +133,5 @@ networks:
 
 volumes:
   mysql_data:
-  kafka_data:
-  zookeeper_data:
-  zookeeper_datalog:
+  kafka-logs:        
+  zookeeper-data:    
