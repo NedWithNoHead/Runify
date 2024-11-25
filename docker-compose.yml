@@ -61,6 +61,7 @@ services:
         - runify-network
 
   receiver:
+    image: jackletrungtin/receiver:latest
     build:
       context: ./Receiver
       dockerfile: Dockerfile
@@ -76,6 +77,7 @@ services:
 
 
   storage:
+    image: jackletrungtin/storage:latest
     build:
       context: ./Storage
       dockerfile: Dockerfile
@@ -94,6 +96,7 @@ services:
         condition: service_started
 
   processing:
+    image: jackletrungtin/processing:latest
     build:
       context: ./Processing
       dockerfile: Dockerfile
