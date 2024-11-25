@@ -1,2 +1,2 @@
-@Library('ci_functions@main') _
-python_build('receiver', 'receiver')
+@Library('runify_functions@main') _
+python_build('receiver', 'jackletrungtin/receiver')
