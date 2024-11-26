@@ -1,2 +1,2 @@
-@Library('runify_functions@main') _
-python_build('Receiver', 'receiver')
+@Library('ci_functions@main') _
+assignment3('Receiver', 'receiver')
