@@ -1,2 +1,2 @@
 @Library('ci_functions@main') _
-python_build('storage', 'storage')
+assignment3('Storage', 'storage')
