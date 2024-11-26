@@ -32,7 +32,8 @@ def get_kafka_client():
         max_retries = 3
         while retry_count < max_retries:
             try:
-                logger.info(f"Attempting to connect to Kafka (attempt {retry_count + 1}/{max_retries})")
+                logger.info(f"Attempting to connect to Kafka \
+                            (attempt {retry_count + 1}/{max_retries})")
                 kafka_client = KafkaClient(hosts=f"{app_config['events']['hostname']}:{app_config['events']['port']}")
                 kafka_topic = kafka_client.topics[str.encode(app_config['events']['topic'])]
                 kafka_producer = kafka_topic.get_sync_producer()
