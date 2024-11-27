@@ -9,7 +9,7 @@ import logging.config
 import uuid
 import time
 from pykafka import KafkaClient
-
+# comment
 with open('app_conf.yml', 'r') as f:
     app_config = yaml.safe_load(f.read())
 
