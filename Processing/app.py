@@ -41,7 +41,7 @@ def get_stats():
 def populate_stats():
     """ Periodically update stats """
     logger.info("Start Periodic Processing")
-    logger.info("DEMO ASSIGNMENT 3")
+    logger.info("DEMO ASSIGNMENT 3 - AFTER REPO")
     current_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(current_dir, app_config['datastore']['filename'])
     
