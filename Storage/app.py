@@ -61,6 +61,7 @@ def get_running_stats(start_timestamp, end_timestamp):
 
 def get_music_info(start_timestamp, end_timestamp):
     """ Gets music info after the timestamp """
+    logger.info("DEMO FOR ASSIGNMENT 3")
     session = get_db_session()
     
     start_timestamp_datetime = datetime.strptime(start_timestamp, "%Y-%m-%dT%H:%M:%SZ")
