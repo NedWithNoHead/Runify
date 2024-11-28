@@ -3,15 +3,17 @@ const EVENTS_URL = {
     running: "http://runify-deployment.canadaeast.cloudapp.azure.com:8110/running",
     music: "http://runify-deployment.canadaeast.cloudapp.azure.com:8110/music"
 }
+const ANOMALY_API_URL = "http://runify-deployment.canadaeast.cloudapp.azure.com:8120/anomalies"
 
-// when getting new events
+let statsData = {
+    num_running_stats: 0,
+    num_music_info: 0
+};
+
 const getEvent = (eventType) => {
-    // get the maximum index
     const maxIndex = eventType === 'running' ? statsData.num_running_stats : statsData.num_music_info
-    // get a random event within maximum index
     const eventIndex = Math.floor(Math.random() * maxIndex)
 
-    // fetch and update new event
     fetch(`${EVENTS_URL[eventType]}?index=${eventIndex}`)
         .then(res => {
             if (!res.ok) {
@@ -20,26 +22,18 @@ const getEvent = (eventType) => {
             return res.json()
         })
         .then((result) => {
-            console.log(`Received ${eventType} event`, result)
             updateEventHTML(result, eventType)
         })
         .catch((error) => {
-            // update event html
             updateEventHTML({ error: error.message }, eventType, true)
         })
 }
-// maintain an object of the total number of events
-let statsData = {
-    num_running_stats: 0,
-    num_music_info: 0
-};
 
 const getStats = (statsUrl) => {
     fetch(statsUrl)
         .then(res => res.json())
         .then((result) => {
-            console.log("Received stats", result)
-            statsData = result  
+            statsData = result
             updateStatsHTML(result)
             updateLastUpdated(result.last_updated)
         })
@@ -104,6 +98,59 @@ const updateEventHTML = (data, eventType, error = false) => {
     }
 }
 
+const updateAnomalies = () => {
+    fetch(ANOMALY_API_URL)
+        .then(res => res.json())
+        .then((anomalies) => {
+            if (anomalies.message) {
+                updateAnomalyHTML(null, 'running');
+                updateAnomalyHTML(null, 'music');
+                return;
+            }
+
+            const runningAnomalies = anomalies
+                .filter(a => a.event_type === 'running_stats')
+                .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            const musicAnomalies = anomalies
+                .filter(a => a.event_type === 'music_info')
+                .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            updateAnomalyHTML(runningAnomalies[0], 'running');
+            updateAnomalyHTML(musicAnomalies[0], 'music');
+        })
+        .catch((error) => {
+            updateAnomalyHTML({ error: error.message }, 'running', true);
+            updateAnomalyHTML({ error: error.message }, 'music', true);
+        });
+}
+
+const updateAnomalyHTML = (anomaly, type, error = false) => {
+    const container = document.getElementById(`${type}-anomalies`);
+    if (!container) return;
+
+    if (error) {
+        container.innerHTML = `<div class="anomaly-box"><p class="error">Error: ${anomaly.error}</p></div>`;
+        return;
+    }
+
+    if (!anomaly) {
+        container.innerHTML = '<div class="anomaly-box"><p class="empty-anomaly">No anomalies detected</p></div>';
+        return;
+    }
+
+    const timestamp = new Date(anomaly.timestamp);
+    container.innerHTML = `
+        <div class="anomaly-box">
+            <h4>Latest ${type.charAt(0).toUpperCase() + type.slice(1)} Anomaly - ${anomaly.anomaly_type}</h4>
+            <p><strong>Event ID:</strong> ${anomaly.event_id}</p>
+            <p><strong>Description:</strong> ${anomaly.description}</p>
+            <p><strong>Detected:</strong> ${timestamp.toLocaleString()}</p>
+            <p><strong>Trace ID:</strong> ${anomaly.trace_id}</p>
+        </div>
+    `;
+}
+
 const updateLastUpdated = (timestamp) => {
     const elem = document.getElementById("last-updated")
     const date = timestamp ? new Date(timestamp) : new Date()
@@ -114,11 +161,13 @@ const setup = () => {
     getStats(STATS_API_URL)
     getEvent("running")
     getEvent("music")
+    updateAnomalies()
 
     setInterval(() => {
         getStats(STATS_API_URL)
         getEvent("running")
         getEvent("music")
+        updateAnomalies()
     }, 3000)
 }
 

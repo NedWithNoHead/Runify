@@ -102,3 +102,39 @@ code {
     border-radius: 4px;
     color: #e74c3c;
 }
+
+.anomaly-box {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    border-radius: 4px;
+}
+
+.anomaly-box h4 {
+    color: #856404;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+
+.anomaly-box p {
+    margin: 0.25rem 0;
+    color: #533f03;
+}
+
+#running-anomalies, #music-anomalies {
+    margin-top: 1rem;
+}
+
+.event-box {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.empty-anomaly {
+    color: #6c757d;
+    font-style: italic;
+}

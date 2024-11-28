@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <main id="main" role="main">
+    <main id="main">
         <header id="header">
             <img src="images/logo.png" alt="Runify Logo" id="logo">
             <h1>Runify Statistics</h1>
@@ -16,21 +16,23 @@
         <div id="stats-container">
             <h2>Current Statistics</h2>
             <div id="stats"></div>
-            <p id="last-updated"></p>
         </div>
 
         <div id="events">
             <div class="event-box">
                 <h3>Running Event</h3>
                 <div id="event-running"></div>
+                <div id="running-anomalies"></div>
             </div>
 
             <div class="event-box">
                 <h3>Music Event</h3>
                 <div id="event-music"></div>
+                <div id="music-anomalies"></div>
             </div>
         </div>
     </main>
+
     <script src="updateStats.js"></script>
 </body>
 </html>
