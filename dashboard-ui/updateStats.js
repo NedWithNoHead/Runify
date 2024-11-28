@@ -33,7 +33,7 @@ const getStats = (statsUrl) => {
     fetch(statsUrl)
         .then(res => res.json())
         .then((result) => {
-            statsData = result
+            statsData = result  
             updateStatsHTML(result)
             updateLastUpdated(result.last_updated)
         })
@@ -130,19 +130,19 @@ const updateAnomalyHTML = (anomaly, type, error = false) => {
     if (!container) return;
 
     if (error) {
-        container.innerHTML = `<div class="anomaly-box"><p class="error">Error: ${anomaly.error}</p></div>`;
+        container.innerHTML = `<code>Error: ${anomaly.error}</code>`;
         return;
     }
 
     if (!anomaly) {
-        container.innerHTML = '<div class="anomaly-box"><p class="empty-anomaly">No anomalies detected</p></div>';
+        container.innerHTML = '<p class="empty-anomaly">No anomalies detected</p>';
         return;
     }
 
     const timestamp = new Date(anomaly.timestamp);
     container.innerHTML = `
-        <div class="anomaly-box">
-            <h4>Latest ${type.charAt(0).toUpperCase() + type.slice(1)} Anomaly - ${anomaly.anomaly_type}</h4>
+        <div class="anomaly-details">
+            <p><strong>Type:</strong> ${anomaly.anomaly_type}</p>
             <p><strong>Event ID:</strong> ${anomaly.event_id}</p>
             <p><strong>Description:</strong> ${anomaly.description}</p>
             <p><strong>Detected:</strong> ${timestamp.toLocaleString()}</p>
@@ -157,12 +157,15 @@ const updateLastUpdated = (timestamp) => {
     elem.textContent = `Last updated: ${date.toLocaleString()}`
 }
 
+
 const setup = () => {
+    // Initial data load
     getStats(STATS_API_URL)
     getEvent("running")
     getEvent("music")
     updateAnomalies()
 
+    // Set up periodic updates every 3 seconds
     setInterval(() => {
         getStats(STATS_API_URL)
         getEvent("running")
@@ -171,4 +174,5 @@ const setup = () => {
     }, 3000)
 }
 
+// Initialize the dashboard when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', setup)

@@ -10,7 +10,7 @@ body {
 }
 
 #main {
-    width: 90%;
+    width: 80vw;
     max-width: 1200px;
     margin: 2rem auto;
     padding: 2rem;
@@ -43,14 +43,14 @@ body {
 
 #stats-container {
     margin-bottom: 2rem;
-    padding: 1.5rem;
+    padding: 1rem;
     background-color: #f8f9fa;
-    border-radius: 8px;
+    border-radius: 6px;
 }
 
 #stats {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
 }
 
@@ -58,29 +58,21 @@ body {
     margin: 0.5rem 0;
     padding: 1rem;
     background-color: white;
-    border-radius: 6px;
+    border-radius: 4px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-#last-updated {
-    text-align: right;
-    color: #666;
-    font-size: 0.9rem;
-    margin-top: 1rem;
-    padding-top: 0.5rem;
-    border-top: 1px solid #eee;
 }
 
 #events {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
+    margin-bottom: 2rem;
 }
 
 .event-box {
-    padding: 1.5rem;
+    padding: 1rem;
     background-color: #f8f9fa;
-    border-radius: 8px;
+    border-radius: 6px;
 }
 
 .event-box h3 {
@@ -88,61 +80,73 @@ body {
     color: #2c3e50;
     border-bottom: 2px solid #e9ecef;
     padding-bottom: 0.5rem;
-    margin-bottom: 1rem;
 }
 
 .event-details {
     background-color: white;
     padding: 1rem;
-    border-radius: 6px;
+    border-radius: 4px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.event-details p {
-    margin: 0.5rem 0;
+/* New Anomalies Styles */
+#anomalies-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #eee;
+}
+
+#anomalies-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
 }
 
 .anomaly-box {
-    margin-top: 1.5rem;
     padding: 1rem;
     background-color: #fff3cd;
     border: 1px solid #ffeeba;
     border-radius: 6px;
 }
 
-.anomaly-box h4 {
+.anomaly-box h3 {
     color: #856404;
-    margin: 0 0 0.75rem 0;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #ffeeba;
 }
 
-.anomaly-box p {
-    margin: 0.25rem 0;
+.anomaly-details {
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 1rem;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+}
+
+.anomaly-details p {
+    margin: 0.5rem 0;
     color: #533f03;
 }
 
 .empty-anomaly {
     color: #6c757d;
     font-style: italic;
+    text-align: center;
+    padding: 1rem;
 }
 
 code {
     display: block;
     padding: 1rem;
     background-color: #f8f9fa;
-    border-radius: 6px;
-    color: #dc3545;
-    font-family: monospace;
+    border-radius: 4px;
+    color: #e74c3c;
 }
 
-.error {
-    color: #dc3545;
-    font-weight: 500;
-}
-
-strong {
-    color: #495057;
-}
-
-.anomaly-container {
+#last-updated {
+    text-align: right;
+    color: #666;
+    font-size: 0.9rem;
     margin-top: 1rem;
 }
