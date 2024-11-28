@@ -151,7 +151,7 @@ services:
 
   anomaly-detector:
     build:
-      context: ./anomaly_detector
+      context: ./Anomaly_detector
       dockerfile: Dockerfile
     ports:
       - "8120:8120"
