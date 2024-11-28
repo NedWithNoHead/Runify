@@ -145,6 +145,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "80"
+    networks:
+      - runify-network
     depends_on:
       - "processing"
       - "analyzer"
