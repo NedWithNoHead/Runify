@@ -70,10 +70,13 @@ services:
     networks:
       - runify-network
     environment:
+      - TARGET_ENV=test
       - PYTHONUNBUFFERED=1
     depends_on:
       kafka:
         condition: service_healthy
+    volumes:
+      - /home/azureuser/config/receiver:/config
 
 
   storage:
@@ -86,6 +89,7 @@ services:
     networks:
       - runify-network
     environment:
+      - TARGET_ENV=test
       - PYTHONUNBUFFERED=1
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_PORT=3306
@@ -94,6 +98,8 @@ services:
         condition: service_healthy
       kafka:
         condition: service_started
+    volumes:
+      - /home/azureuser/config/storage:/config
 
   processing:
     image: jackletrungtin/processing:latest
@@ -105,9 +111,13 @@ services:
     networks:
       - runify-network
     environment:
+      - TARGET_ENV=test
       - PYTHONUNBUFFERED=1
     depends_on:
       - storage
+    volumes:
+      - /home/azureuser/config/processing:/config
+      - processing-db:/data 
 
   analyzer:
     build:
@@ -118,9 +128,12 @@ services:
     networks:
       - runify-network
     environment:
+      - TARGET_ENV=test
       - PYTHONUNBUFFERED=1
     depends_on:
       - kafka
+    volumes:
+      - /home/azureuser/config/analyzer:/config
 
   dashboard:
     build:
@@ -139,4 +152,5 @@ networks:
 volumes:
   mysql_data:
   kafka-logs:        
-  zookeeper-data:    
+  zookeeper-data:
+  processing-db:     
