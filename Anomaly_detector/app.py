@@ -161,7 +161,7 @@ def process_messages():
 
 # Create Flask app
 app = connexion.FlaskApp(__name__, specification_dir='')
-app.add_api("openapi.yaml", strict_validation=True, validate_responses=True)
+app.add_api("openapi.yaml", base_path="/anomaly", strict_validation=True, validate_responses=True)
 CORS(app.app)
 
 if __name__ == "__main__":

@@ -109,7 +109,7 @@ def music_info(body):
         return {"message": "Internal Server Error"}, 500
 
 app = connexion.FlaskApp(__name__, specification_dir='')
-app.add_api("openapi.yaml", strict_validation=True, validate_responses=True)
+app.add_api("openapi.yaml", base_path="/receiver", strict_validation=True, validate_responses=True)
 
 if __name__ == "__main__":
     try:

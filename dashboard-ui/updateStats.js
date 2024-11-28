@@ -1,9 +1,9 @@
-const STATS_API_URL = "http://runify-deployment.canadaeast.cloudapp.azure.com:8100/stats"
+const STATS_API_URL = "http://runify-deployment.canadaeast.cloudapp.azure.com/processing/stats"
 const EVENTS_URL = {
-    running: "http://runify-deployment.canadaeast.cloudapp.azure.com:8110/running",
-    music: "http://runify-deployment.canadaeast.cloudapp.azure.com:8110/music"
+    running: "http://runify-deployment.canadaeast.cloudapp.azure.com/analyzer/running",
+    music: "http://runify-deployment.canadaeast.cloudapp.azure.com/analyzer/music"
 }
-const ANOMALY_API_URL = "http://runify-deployment.canadaeast.cloudapp.azure.com:8120/anomalies"
+const ANOMALY_API_URL = "http://runify-deployment.canadaeast.cloudapp.azure.com/anomaly/anomalies"
 
 let statsData = {
     num_running_stats: 0,
