@@ -102,7 +102,10 @@ const updateAnomalies = () => {
     fetch(ANOMALY_API_URL)
         .then(res => res.json())
         .then((anomalies) => {
+            console.log('Received anomalies:', anomalies);  // Debug log
+
             if (anomalies.message) {
+                console.log('No anomalies found');  // Debug log
                 updateAnomalyHTML(null, 'running');
                 updateAnomalyHTML(null, 'music');
                 return;
@@ -116,10 +119,16 @@ const updateAnomalies = () => {
                 .filter(a => a.event_type === 'music_info')
                 .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
             
+            console.log('Filtered anomalies:', {  // Debug log
+                running: runningAnomalies,
+                music: musicAnomalies
+            });
+
             updateAnomalyHTML(runningAnomalies[0], 'running');
             updateAnomalyHTML(musicAnomalies[0], 'music');
         })
         .catch((error) => {
+            console.error('Error fetching anomalies:', error);  // Debug log
             updateAnomalyHTML({ error: error.message }, 'running', true);
             updateAnomalyHTML({ error: error.message }, 'music', true);
         });
@@ -127,7 +136,12 @@ const updateAnomalies = () => {
 
 const updateAnomalyHTML = (anomaly, type, error = false) => {
     const container = document.getElementById(`${type}-anomalies`);
-    if (!container) return;
+    console.log(`Updating ${type} anomalies:`, { container, anomaly, error });  // Debug log
+    
+    if (!container) {
+        console.error(`Container for ${type}-anomalies not found`);  // Debug log
+        return;
+    }
 
     if (error) {
         container.innerHTML = `<code>Error: ${anomaly.error}</code>`;
@@ -149,6 +163,7 @@ const updateAnomalyHTML = (anomaly, type, error = false) => {
             <p><strong>Trace ID:</strong> ${anomaly.trace_id}</p>
         </div>
     `;
+    console.log(`Updated ${type} anomaly content`);  
 }
 
 const updateLastUpdated = (timestamp) => {
@@ -159,20 +174,25 @@ const updateLastUpdated = (timestamp) => {
 
 
 const setup = () => {
+    console.log('Dashboard setup starting');  // Debug log
+    
     // Initial data load
-    getStats(STATS_API_URL)
-    getEvent("running")
-    getEvent("music")
-    updateAnomalies()
+    getStats(STATS_API_URL);
+    getEvent("running");
+    getEvent("music");
+    updateAnomalies();  // Make sure this runs
 
-    // Set up periodic updates every 3 seconds
+    // Set up periodic updates
     setInterval(() => {
-        getStats(STATS_API_URL)
-        getEvent("running")
-        getEvent("music")
-        updateAnomalies()
-    }, 3000)
+        getStats(STATS_API_URL);
+        getEvent("running");
+        getEvent("music");
+        updateAnomalies();  // Make sure this runs in the interval
+    }, 3000);
+
+    console.log('Dashboard setup complete');  // Debug log
 }
 
-// Initialize the dashboard when the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', setup)
+// Make sure this executes
+console.log('Script loaded');
+document.addEventListener('DOMContentLoaded', setup);
