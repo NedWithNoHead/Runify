@@ -149,6 +149,27 @@ services:
       - "processing"
       - "analyzer"
 
+  anomaly-detector:
+    build:
+      context: ./anomaly_detector
+      dockerfile: Dockerfile
+    ports:
+      - "8120:8120"
+    networks:
+      - runify-network
+    environment:
+      - PYTHONUNBUFFERED=1    
+    depends_on:
+      kafka:
+        condition: service_healthy    
+    volumes:
+      - anomaly-storage:/data    
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+        window: 120s    
+
 networks:
   runify-network:
     driver: bridge
@@ -157,4 +178,5 @@ volumes:
   mysql_data:
   kafka-logs:        
   zookeeper-data:
-  processing-db:     
+  processing-db:    
+  anomaly-storage: 

@@ -1,0 +1,83 @@
+openapi: 3.0.0
+info:
+  description: This API detects anomalies in running and music data
+  version: "1.0.0"
+  title: Runify Anomaly API
+  contact:
+    email: tle172@my.bcit.ca
+
+paths:
+  /anomalies:
+    get:
+      summary: Gets the event anomalies
+      operationId: app.get_anomalies
+      description: Gets the list of event anomalies from newest to oldest
+      parameters:
+        - name: anomaly_type
+          in: query
+          description: The type of anomaly to retrieve (LongRun, ShortRun, LongSong, ShortSong)
+          schema:
+            type: string
+            enum: [LongRun, ShortRun, LongSong, ShortSong]
+            example: LongRun
+      responses:
+        '200':
+          description: Successfully returned a list of anomalies of the given type
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Anomaly'
+        '400':
+          description: Invalid Anomaly Type
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Anomalies do not exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+components:
+  schemas:
+    Anomaly:
+      required:
+      - event_id
+      - trace_id
+      - event_type
+      - anomaly_type
+      - description
+      - timestamp
+      properties:
+        event_id:
+          type: string
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        trace_id:
+          type: string
+          example: f058ebd6-02f7-4d3f-942e-904344e8cde5
+        event_type:
+          type: string
+          enum: [running_stats, music_info]
+          example: running_stats
+        anomaly_type:
+          type: string
+          enum: [LongRun, ShortRun, LongSong, ShortSong]
+          example: LongRun
+        description:
+          type: string
+          example: Run distance of 50000m exceeds maximum threshold of 42000m
+        timestamp:
+          type: string
+          format: date-time
+          example: 2024-11-14T11:22:33Z
+      type: object

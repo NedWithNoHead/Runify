@@ -1,0 +1,15 @@
+connexion
+sqlalchemy
+mysql-connector-python
+pymysql
+pyyaml
+requests
+uvicorn
+connexion[flask]
+apscheduler
+swagger-ui-bundle
+python-dotenv
+pykafka 
+setuptools
+cryptography
+flask-cors

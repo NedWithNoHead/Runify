@@ -1,0 +1,14 @@
+version: 1
+datastore:
+  filename: /data/anomalies.json
+events:
+  hostname: kafka
+  port: 9092
+  topic: events
+thresholds:
+  running:
+    max_distance: 42000  
+    min_duration: 300    
+  music:
+    max_duration: 900    
+    min_duration: 30     
