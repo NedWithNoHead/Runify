@@ -98,7 +98,7 @@ services:
       mysql:
         condition: service_healthy
       kafka:
-        condition: service_started
+        condition: service_started #service_healthy might be 
     volumes:
       - /home/azureuser/config/storage:/config
       - /home/azureuser/logs:/logs

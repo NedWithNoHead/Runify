@@ -102,10 +102,10 @@ const updateAnomalies = () => {
     fetch(ANOMALY_API_URL)
         .then(res => res.json())
         .then((anomalies) => {
-            console.log('Received anomalies:', anomalies);  // Debug log
+            console.log('Received anomalies:', anomalies);  
 
             if (anomalies.message) {
-                console.log('No anomalies found');  // Debug log
+                console.log('No anomalies found'); 
                 updateAnomalyHTML(null, 'running');
                 updateAnomalyHTML(null, 'music');
                 return;
@@ -119,7 +119,7 @@ const updateAnomalies = () => {
                 .filter(a => a.event_type === 'music_info')
                 .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
             
-            console.log('Filtered anomalies:', {  // Debug log
+            console.log('Filtered anomalies:', {  
                 running: runningAnomalies,
                 music: musicAnomalies
             });
@@ -128,7 +128,7 @@ const updateAnomalies = () => {
             updateAnomalyHTML(musicAnomalies[0], 'music');
         })
         .catch((error) => {
-            console.error('Error fetching anomalies:', error);  // Debug log
+            console.error('Error fetching anomalies:', error); 
             updateAnomalyHTML({ error: error.message }, 'running', true);
             updateAnomalyHTML({ error: error.message }, 'music', true);
         });
@@ -174,25 +174,22 @@ const updateLastUpdated = (timestamp) => {
 
 
 const setup = () => {
-    console.log('Dashboard setup starting');  // Debug log
+    console.log('Dashboard setup starting'); 
     
-    // Initial data load
     getStats(STATS_API_URL);
     getEvent("running");
     getEvent("music");
-    updateAnomalies();  // Make sure this runs
+    updateAnomalies();  
 
-    // Set up periodic updates
     setInterval(() => {
         getStats(STATS_API_URL);
         getEvent("running");
         getEvent("music");
-        updateAnomalies();  // Make sure this runs in the interval
+        updateAnomalies();  
     }, 3000);
 
-    console.log('Dashboard setup complete');  // Debug log
+    console.log('Dashboard setup complete');  
 }
 
-// Make sure this executes
 console.log('Script loaded');
 document.addEventListener('DOMContentLoaded', setup);
