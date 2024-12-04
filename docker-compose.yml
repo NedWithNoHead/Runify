@@ -160,17 +160,15 @@ services:
     networks:
       - runify-network
     environment:
+      - TARGET_ENV=test
       - PYTHONUNBUFFERED=1    
     depends_on:
       kafka:
         condition: service_healthy    
     volumes:
-      - anomaly-storage:/data    
-    deploy:
-      restart_policy:
-        condition: on-failure
-        max_attempts: 3
-        window: 120s    
+      - anomaly-storage:/data
+      - /home/azureuser/config/anomaly-detector:/config  
+      - /home/azureuser/logs:/logs                           
 
   nginx:
     image: nginx:latest
