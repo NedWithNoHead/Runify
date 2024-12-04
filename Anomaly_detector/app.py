@@ -69,26 +69,23 @@ def add_anomaly(anomaly):
     logger.info(f"Added new anomaly: {anomaly}")
 
 def process_messages():
-    """Process messages from Kafka and detect anomalies
-    
-    This function runs in a continuous loop to consume messages from Kafka,
-    with proper error handling and retry logic to prevent system resource exhaustion.
-    It includes:
-    - Kafka connection management with retries
-    - Message processing with error isolation
-    - Resource-friendly error handling with exponential backoff
-    """
-    hostname = "%s:%d" % (app_config['events']['hostname'], app_config['events']['port'])
+    message_batch_size = 1000  
+    batch_timeout = 300        
     retry_count = 0
     max_retries = 3
     consumer = None
     
+    hostname = "%s:%d" % (app_config['events']['hostname'], app_config['events']['port'])
     logger.info("Starting message processing service")
     logger.info(f"Connecting to Kafka at {hostname}")
     
     while True:
+        message_count = 0
+        start_time = time.time()
+        
         try:
             if consumer is None:
+                logger.info("Attempting to establish Kafka connection")
                 client = KafkaClient(hosts=hostname)
                 topic = client.topics[str.encode(app_config["events"]["topic"])]
                 consumer = topic.get_simple_consumer(
@@ -97,13 +94,21 @@ def process_messages():
                     auto_offset_reset=OffsetType.LATEST
                 )
                 logger.info("Successfully connected to Kafka")
-                retry_count = 0  
+                retry_count = 0 
             
             for msg in consumer:
                 try:
+                    message_count += 1
+                    current_time = time.time()
+                    if message_count >= message_batch_size or (current_time - start_time) > batch_timeout:
+                        logger.info(f"Taking a break after processing {message_count} messages")
+                        time.sleep(1)  
+                        message_count = 0
+                        start_time = current_time
+                    
                     msg_str = msg.value.decode('utf-8')
                     msg = json.loads(msg_str)
-                    logger.info(f"Received event: {msg}")
+                    logger.debug(f"Received event: {msg}")  
                     
                     payload = msg["payload"]
                     event_type = msg["type"]
@@ -119,6 +124,7 @@ def process_messages():
                                 "timestamp": datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
                             }
                             add_anomaly(anomaly)
+                            logger.info(f"Detected LongRun anomaly: {payload['user_id']}")
                         
                         if payload["duration"] < app_config["thresholds"]["running"]["min_duration"]:
                             anomaly = {
@@ -130,6 +136,7 @@ def process_messages():
                                 "timestamp": datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
                             }
                             add_anomaly(anomaly)
+                            logger.info(f"Detected ShortRun anomaly: {payload['user_id']}")
                     
                     elif event_type == "music_info":
                         if payload["song_duration"] > app_config["thresholds"]["music"]["max_duration"]:
@@ -142,6 +149,7 @@ def process_messages():
                                 "timestamp": datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
                             }
                             add_anomaly(anomaly)
+                            logger.info(f"Detected LongSong anomaly: {payload['user_id']}")
                         
                         if payload["song_duration"] < app_config["thresholds"]["music"]["min_duration"]:
                             anomaly = {
@@ -153,6 +161,7 @@ def process_messages():
                                 "timestamp": datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
                             }
                             add_anomaly(anomaly)
+                            logger.info(f"Detected ShortSong anomaly: {payload['user_id']}")
                     
                     consumer.commit_offsets()
                     
@@ -161,7 +170,7 @@ def process_messages():
                     continue  
                 except Exception as e:
                     logger.error(f"Error processing individual message: {e}")
-                    continue  
+                    continue 
             
         except Exception as e:
             logger.error(f"Error in message processing loop: {str(e)}")
@@ -173,7 +182,7 @@ def process_messages():
                 time.sleep(60)  
                 retry_count = 0
             else:
-                sleep_time = min(5 * retry_count, 30)  
+                sleep_time = min(5 * (2 ** retry_count), 30)  
                 logger.info(f"Retrying in {sleep_time} seconds... (Attempt {retry_count}/{max_retries})")
                 time.sleep(sleep_time)
 

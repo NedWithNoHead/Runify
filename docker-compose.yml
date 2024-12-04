@@ -168,7 +168,15 @@ services:
     volumes:
       - anomaly-storage:/data
       - /home/azureuser/config/anomaly-detector:/config  
-      - /home/azureuser/logs:/logs                           
+      - /home/azureuser/logs:/logs   
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M                        
 
   nginx:
     image: nginx:latest
