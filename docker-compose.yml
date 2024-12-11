@@ -199,7 +199,7 @@ services:
       context: ./check
       dockerfile: Dockerfile
     ports:
-      - "8130"
+      - "8130:8130"
     networks:
       - runify-network
     environment:
@@ -211,8 +211,6 @@ services:
       - "processing"
       - "analyzer"
     volumes:
-      - /home/azureuser/config/check:/config
-      - /home/azureuser/logs:/logs
       - check-status:/data
   
 networks:
