@@ -4,7 +4,7 @@ datastore:
 schedule:
   period_sec: 10
 services:
-  receiver: http://receiver:8080/receiver
+  receiver: http://receiver:8080/receiver/stats/running
   storage: http://storage:8090/storage/stats  
   processing: http://processing:8100/processing/stats
   analyzer: http://analyzer:8110/analyzer/stats

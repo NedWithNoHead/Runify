@@ -9,6 +9,7 @@ import requests
 from requests.exceptions import Timeout, ConnectionError
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask_cors import CORS
+from datetime import datetime
 
 if "TARGET_ENV" in os.environ and os.environ["TARGET_ENV"] == "test":
     print("In Test Environment")  
@@ -39,15 +40,21 @@ def check_services():
     }
 
     try:
-        response = requests.get(
+        response = requests.post(
             app_config["services"]["receiver"],
-            timeout=app_config["timeout"]["seconds"]
+            timeout=app_config["timeout"]["seconds"],
+            json={
+                "user_id": "health-check",
+                "duration": 1,
+                "distance": 1,
+                "timestamp": datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+            }
         )
-        if response.status_code == 200:
+        if response.status_code in [200, 201]:  # Accept both OK and Created
             status["receiver"] = "Healthy"
             logger.info("Receiver is Healthy")
         else:
-            logger.error("Receiver returned non-200 response")
+            logger.error(f"Receiver returned {response.status_code} response")
     except (Timeout, ConnectionError) as e:
         logger.error(f"Receiver check failed: {str(e)}")
 
