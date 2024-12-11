@@ -196,7 +196,7 @@ services:
 
   check:
     build:
-      context: ./Test
+      context: ./check
       dockerfile: Dockerfile
     ports:
       - "8130"
