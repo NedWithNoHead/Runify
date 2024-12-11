@@ -165,6 +165,22 @@ def process_messages():
 app = connexion.FlaskApp(__name__, specification_dir='')
 app.add_api("openapi.yaml", base_path="/storage", strict_validation=True, validate_responses=True)
 
+def get_event_stats():
+    session = get_db_session()
+    
+    num_running = session.query(RunningData).count()
+    num_music = session.query(MusicData).count()
+    
+    session.close()
+    
+    stats = {
+        "num_running_stats": num_running,
+        "num_music_info": num_music
+    }
+    
+    logger.info(f"Retrieved stats: Running={num_running}, Music={num_music}")
+    return stats, 200
+
 if __name__ == "__main__":
     try:
         logger.info("Attempting to create database tables...")

@@ -111,6 +111,10 @@ def music_info(body):
 app = connexion.FlaskApp(__name__, specification_dir='')
 app.add_api("openapi.yaml", base_path="/receiver", strict_validation=True, validate_responses=True)
 
+# new endpoint that returns the health status of the service
+def get_check():
+    return NoContent, 200
+
 if __name__ == "__main__":
     try:
         producer = get_kafka_client()
