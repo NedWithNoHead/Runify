@@ -162,8 +162,6 @@ def process_messages():
         except Exception as e:
             logger.error(f"Error processing message: {str(e)}")
 
-app = connexion.FlaskApp(__name__, specification_dir='')
-app.add_api("openapi.yaml", base_path="/storage", strict_validation=True, validate_responses=True)
 
 def get_event_stats():
     session = get_db_session()
@@ -180,6 +178,10 @@ def get_event_stats():
     
     logger.info(f"Retrieved stats: Running={num_running}, Music={num_music}")
     return stats, 200
+
+
+app = connexion.FlaskApp(__name__, specification_dir='')
+app.add_api("openapi.yaml", base_path="/storage", strict_validation=True, validate_responses=True)
 
 if __name__ == "__main__":
     try:
