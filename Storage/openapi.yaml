@@ -71,18 +71,18 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/MusicInfo'
-    /stats:
-      get:
-        summary: gets the event stats  
-        operationId: app.get_event_stats
-        description: Gets the stats of the history events
-        responses:
-          '200':
-            description: Successfully returned the event stats
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/Stats'
+  /stats:
+    get:
+      summary: gets the event stats  
+      operationId: app.get_event_stats
+      description: Gets the stats of the history events
+      responses:
+        '200':
+          description: Successfully returned the event stats
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stats'
   
 
 components:
