@@ -193,6 +193,27 @@ services:
       - analyzer
       - dashboard
       - anomaly-detector
+
+  check:
+    build:
+      context: ./check
+      dockerfile: Dockerfile
+    ports:
+      - "8130"
+    networks:
+      - runify-network
+    environment:
+      - TARGET_ENV=test
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - "receiver"
+      - "storage" 
+      - "processing"
+      - "analyzer"
+    volumes:
+      - /home/azureuser/config/check:/config
+      - /home/azureuser/logs:/logs
+      - check-status:/data
   
 networks:
   runify-network:
@@ -204,3 +225,4 @@ volumes:
   zookeeper-data:
   processing-db:    
   anomaly-storage: 
+  check-status:

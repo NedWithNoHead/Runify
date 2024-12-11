@@ -179,7 +179,6 @@ def get_event_stats():
     logger.info(f"Retrieved stats: Running={num_running}, Music={num_music}")
     return stats, 200
 
-
 app = connexion.FlaskApp(__name__, specification_dir='')
 app.add_api("openapi.yaml", base_path="/storage", strict_validation=True, validate_responses=True)
 
